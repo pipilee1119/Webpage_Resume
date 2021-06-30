@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <title>Generic - Editorial by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h1>EVEN遊戲</h1>
+                        <h3>Android Studio實作</h3>
+                    </header>
+
+                    <p>使用Android Studio開發的app小遊戲，在九宮格內滑動數字及運算格，計算至最後一個數為雙數勝利，反之則失敗。</p>
+                    <h4>章節</h4>
+                    <ol>
+                        <li>遊戲介紹</li>
+                        <li>簡易類別圖</li>
+                        <li>程式碼介紹</li>
+                    </ol>
+
+                    <hr class="major" />
+
+                    <h2>遊戲介紹</h2>
+                    <video autoplay preload muted style="width:1000px;">
+                        <source src="ppt/EVEN.mp4" type="video/mp4" />
+                        <p>Your browser does not support HTML5 Video.</p>
+                    </video>
+
+                    <hr class="major" />
+
+                    <h2>簡易類別圖</h2>
+                    <span class="image main"><img src="ppt/even_class_diagram.jpg" alt="" /></span>
+                    <p><b>MainActivity</b>:&nbsp;用於分數計算，完成一輪九宮格+1分，失敗則歸零。</p>
+                    <p><b>Card</b>:&nbsp;用於字卡設計以及格子內的數字儲存/挪用。</p>
+                    <p><b>GameView</b>:&nbsp;大部分的邏輯運算，包含:手指點擊/移動狀態、數字運算、開始/重置遊戲等。</p>
+
+                    <hr class="major" />
+
+                    <h2>程式碼介紹</h2>
+                    <h4>重點介紹GameView的程式邏輯:</h4>
+                    <ol>
+                        <li>
+                            <h4>參數設定</h4>
+                        </li>
+                        <pre>
+                        <code>private int n [][] =new int[4][4];//紀錄移動到過哪個點用
+private int co =1;//計算次數用 和 紀錄經過觸控順序
+private int total=0;//總數
+private int math=0;
+private int math2=0;
+private int math3=0;
+private int re=0;</code>
+                        </pre>
+                        <p>-陣列n : 紀錄移動到過的點<br />
+                            -co : 紀錄經過次數(不得超過3次)<br />
+                            -total: 每次計算後的總數值<br />
+                            -math, math2, math3 : 手指經過的3個數字/運算卡<br />
+                            -re : 總計使用過的字卡(消耗最多8個)<br />
+                        </p>
+
+                        <li><h4>開始遊戲</h4></li>
+                        <pre>
+                        <code>private void startGame(){ //遊戲起始
+        for(int y=0;y<3;y++){ //清空原本的值
+            for(int x=0;x<3;x++){
+                cardsMap[x][y].setNum(0);//清空 卡片
+            }
+        }
+        clearn();
+        for(int i=0;i<2;i++){ //加入兩個乘
+            addRandom1();
+        }
+        addRandom2();//一個加
+        addRandom3();//一個減
+        for(int i=0;i<5;i++){ //加入五個隨機數
+            addRandomNum();
+        }
+
+    }</code>
+                        </pre>
+                        <p>-加入4個運算符號<br />
+-加入5個隨機數字<br />
+
+                        </p>
+                        <li><h4>手指動作</h4></li>
+                        <pre><code>
+    private void initGameView(){
+        setColumnCount(3);//行數
+        setBackgroundColor(0xffA6A6D2);//底色
+        setOnTouchListener(new OnTouchListener() {//觸控事件
+            private float startX,startY,offsetX,offsetY,mX,mY;
+                        </code></pre>
+                            <h4>手指按下</h4>
+                        <pre><code>
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN: //抓 手指按下
+                        startX = motionEvent.getX();
+                        startY = motionEvent.getY();
+                        checkXY(startX,startY);
+                        if(startX>734||startY>734||startX<1||startY<1) {//方格外
+                            co=4;
+                        }
+                        break;
+                        </code></pre>
+                        <h4>checkXY</h4>
+                        <p>確認手指是否有在九宮格範圍內，(x,y)座標:x (1~734), y(1~734)，並且經過的格子數不超過3(co<4)</p>
+                        <pre><code>
+   private void checkXY(float startX,float startY){ //抓起始點
+        int cx = 0,cy=0;
+        if(startX<245&&startX>1){//抓第一直行 1-1 1-2 1-3
+            if(startY<245&&startY>1&&n[1][1]<=0&&co<4){
+            //1-1 如果起始按下處不為1-1且移動到1-1已計算一次且總計次不超過三次則執行
+                cx=1;cy=1;
+            }
+            else if(startY>245&&startY<490&&n[1][2]<=0&&co<4){
+                cx=1;cy=2;
+            }
+            else if(startY>490&&startY<734&&n[1][3]<=0&&co<4){
+                cx=1;cy=3;
+            }
+        }
+        else if(startX>245&&startX<490){//抓第二直行 2-1 2-2 2-3
+            if(startY<245&&startY>1&&n[2][1]<=0&&co<4){
+            //2-1 如果起始按下處不為2-1且移動到2-1已計算一次且總計次不超過三次則執行
+                cx=2;cy=1;
+            }
+            else if(startY>245&&startY<490&&n[2][2]<=0&&co<4){
+                cx=2;cy=2;
+            }
+            else if(startY>490&&startY<734&&n[2][3]<=0&&co<4){
+                cx=2;cy=3;
+            }
+        }
+        else if(startX>490&&startX<734) {//抓第三直行 3-1 3-2 3-3
+            if (startY < 245 && startY > 1 && n[3][1] <= 0&&co<4) {
+            //3-1 如果起始按下處不為3-1且移動到3-1已計算一次且總計次不超過三次則執行
+                cx=3;cy=1;
+            } else if (startY > 245 && startY < 490 && n[3][2] <= 0&&co<4) {
+                cx=3;cy=2;
+
+            } else if (startY > 490 && startY < 734 && n[3][3] <= 0&&co<4) {
+                cx=3;cy=3;
+            }
+        }
+                        </code></pre>
+                        <p>若不超過格子則確認格內數字並記錄。</p>
+                        <pre><code>
+        if(cx!=0||cy!=0){
+        System.out.println(cx+"-"+cy+"m");
+        n[cx][cy]=co;
+        if(co==2){math2=cardsMap[cx-1][cy-1].getNum();
+        System.out.println(math2);
+        checkCuc();
+        System.out.println(math2);}
+        else if(co==3){math3=cardsMap[cx-1][cy-1].getNum();
+        System.out.println(math3);
+        checkNum3();
+        System.out.println(math3);}
+        co++;
+        }
+                        </code></pre>
+                        <h4>確認格子</h4>
+                        <p>確認滑動格子1,2,3(math,math2,math3)分別為數字、運算符號、數字，否則該次點擊不算數(co=4)。<br/>
+                        checkNum:確認是否為數字(n>0)&nbsp;;&nbsp;checkCuc:確認是否為運算(n<0)</p>
+                        <pre><code>
+    private void checkNum(){ //確認按下第一個 是否為數字
+        if(math<0){
+            math=0;
+            total=0;
+            co=4;
+        }
+    }
+    private void checkCuc(){ //確認按下第二個 是否為乘除
+        if(math2>0){
+            math2=0;
+            total=0;
+            co=4;
+        }
+    }
+                        </code></pre>
+                        
+                        <h4>手指移動</h4>
+                        <pre><code>
+    case MotionEvent.ACTION_MOVE: //抓 手指移動
+                        mX = motionEvent.getX();
+                        mY = motionEvent.getY();
+                        checkXY(mX,mY);
+                        if(mX>734||mY>734||mX<1||mY<1) {//方格外
+                            co=4;
+                        }
+                        break;
+                        </code></pre>
+                        <h4>手指鬆開</h4>
+                        <span class="image main"><img src="ppt/even_au1.jpg" alt="" /></span>
+                        <span class="image main"><img src="ppt/even_au2.jpg" alt="" /></span>
+                        <pre><code>
+    case MotionEvent.ACTION_UP://抓 手指放開
+                        if(math!=0&&math2!=0&&math3!=0){
+                            checkup();
+                        }
+                        for(int y=0;y<3;y++){
+                            for(int x=0;x<3;x++){
+                                if(n[x+1][y+1]>0&&n[x+1][y+1]!=5){n [x+1][y+1]=0;}
+                                //將沒用到的重回0次
+                            }
+                        }
+                        if(re>=8){//當全部運算與數字都用完
+                            for(int y=0;y<3;y++){
+                                for(int x=0;x<3;x++){
+                                    n [x+1][y+1]=0;//記錄歸0
+                                }
+                            }
+                            if(total%2==0){//為偶數的話
+                                MainActivity.getMainActivity().addScore(1);
+                                for(int i=0;i<2;i++){ //加入兩個乘
+                                    addRandom1();
+                                }
+                                addRandom2();//一個加
+                                addRandom3();//一個減
+                                for(int i=0;i<4;i++){ //加入四個隨機數
+                                    addRandomNum();
+                                }
+                                re=0;//歸0
+                            }
+                            else {//為奇數
+                                MainActivity.getMainActivity().clearScore();
+                                checkcomplete();//重來
+                                re=0;//歸0
+                            }
+                        }
+                        math=0;math2=0;math3=0;//數值回歸0
+                        total=0;//總歸0
+                        co=1;
+                        break;
+                        </code></pre>
+                        <li><h4>失敗訊息</h4></li>
+                        <p>若最後數值為奇數，則跳出失敗訊息，重置分數。</p>
+                        <pre><code>
+    private void checkcomplete(){ //確認是否為奇數 =>結束
+        boolean complete = true;
+        if (complete){//跳出警示框 顯示結束
+            new AlertDialog.Builder(getContext()).setTitle("失敗")
+            .setMessage("請重新開始")
+            .setPositiveButton("重來", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startGame();//重新開始
+                }
+            }).show();
+        }
+    }
+                        </code></pre>
+                            
+                    </ol>
+
+                </section>
+
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <!--
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+-->
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">首頁</a></li>
+                        <li>
+                            <span class="opener">Android Studio</span>
+                            <ul>
+                                <li><a href="android.html">EVEN遊戲</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Unity3D</span>
+                            <ul>
+                                <li><a href="VR.html">VR聊天室</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Python筆記</span>
+                            <ul>
+                                <li><a href="#">爬蟲</a></li>
+                                <li><a href="#">MNIST實作</a></li>
+                                <li><a href="#">BinarySearchTree</a></li>
+                                <li><a href="#">Threading</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Leetcode筆記</span>
+                            <ul>
+                                <li><a href="leetcode.html">two sum</a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <!--
+								<section>
+									<header class="major">
+										<h2>Ante interdum</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<a href="#" class="image"><img src="images/pic07.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic08.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic09.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+									</div>
+									<ul class="actions">
+										<li><a href="#" class="button">More</a></li>
+									</ul>
+								</section>
+-->
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>聯繫方式</h2>
+                    </header>
+                    <p>若有公司對於我感興趣，或有任何問題，可透過以下方式與我聯繫。</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope">pipi11192@gmail.com</li>
+                        <li class="icon solid fa-phone">0937-360-207</li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.<br />
+                        網頁模板來源:&nbsp;<a href="https://html5up.net/editorial">https://html5up.net/editorial</a></p>
+                </footer>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body></html>

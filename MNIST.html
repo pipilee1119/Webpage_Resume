@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+    <title>Generic - Editorial by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h1>MNIST手寫數字辨識</h1>
+                        <h3>AI實作</h3>
+                    </header>
+
+                    <p>本次MNIST手寫數字辨識使用Keras，訓練模型並且親自手寫數字給予模型辨識。</p>
+
+
+                    <h2>程式實作</h2>
+                    <ol>
+                        <li>
+                            <h4>工具/資料準備</h4>
+                        </li>
+                        <p>下載資料: Tensorflow準備好的mnist資料 (60000筆訓練資料，10000筆測試資料)
+                        </p>
+                        <pre>
+                        <code>import tensorflow as tf
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()</code>
+                        </pre>
+
+
+                        <li>
+                            <h4>整理資料</h4>
+                        </li>
+                        <p>將28*28圖片中的數字像素/255，使數值都在0~1之間便於計算(本次模型僅使用全連結層，因此不須轉換圖片為四維陣列；若使用卷積層，則必須轉換為[ID,H,W,Channel]的四維陣列)。
+                        </p>
+                        <pre>
+                        <code>x_train, x_test = x_train / 255.0, x_test / 255.0</code>
+                        </pre>
+                        <p>x_train(訓練資料), x_test(驗證資料) => 28*28的圖片資料 ; y_train, y_test => x的答案(標籤)
+                        </p>
+                        <li>
+                            <h4>神經網路模型建立</h4>
+                        </li>
+                        <p>模型: 平坦層 => 全連結層(隱藏層) => Dropout層 => 輸出層
+                         </p>
+                        <pre>
+                        <code>model = tf.keras.models.Sequential([
+    # Flatten:將卷積、池化後的輸出(特徵圖)拉平，轉換維度後才能輸入進全連結層(密集層)
+    tf.keras.layers.Flatten(input_shape = (28,28)),
+    # Dense:全連結層 (密集層)，指定128個神經元, ReLU:將負向量轉換為 0
+    tf.keras.layers.Dense(128, activation='relu'),
+    #Dropout層: 防止過度擬合，丟棄20%的神經元
+    tf.keras.layers.Dropout(0.2),
+    #最後一層:輸出層，輸出0~9的分類值, softmax: 最大為1(總機率)
+    tf.keras.layers.Dense(10, activation='softmax')
+])</code>
+                        </pre>
+                        <li>
+                            <h4>函數設定</h4>
+                        </li>
+                        <p>使用adam梯度下降法、交叉熵損失函數、計算準確率。
+                         </p>
+                        <pre>
+                        <code># model每層定義好後需要經過compile，定義訓練參數
+#loss: sparse_categorical_crossentropy一種損失函數
+#adam: 一種常用的梯度下降法
+#accurancy: 精度
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])</code>
+                        </pre>
+                        <li>
+                            <h4>訓練模型</h4>
+                        </li>
+                        <p>週期五次(epochs = 5)、顯示訓練資料結果(verbose = 2)
+                         </p>
+                        <pre>
+                        <code>model.fit(x_train, y_train, epochs=5)
+model.evaluate(x_test, y_test,verbose = 2)</code>
+                        </pre>
+                        <span class="image main"><img src="ppt/mnist_train.jpg" alt="" /></span>
+                        <li>
+                            <h4>儲存模型</h4>
+                        </li>
+
+                        <pre>
+                        <code>model.save('mnist_test')</code>
+                        </pre>
+                        
+                        <li>
+                            <h4>工具準備/使用模型</h4>
+                        </li>
+                        <p>可開設新的檔案，讀取儲存的模型。</p>
+
+                        <pre>
+                        <code>import numpy as np
+from keras.models import load_model
+import matplotlib.pyplot as plt
+from PIL import Image
+#載入模型
+model = load_model('mnist_test')</code>
+                        </pre>
+                        <li>
+                            <h4>轉換圖片/預測圖片</h4>
+                        </li>
+                        <p>將本人手寫數字，讀取後整理成模型可接受的資料型態(灰階圖轉成陣列、除255)，得出預測結果。</p>
+
+                        <pre>
+                        <code>#轉換圖片的function
+def pict(name):
+    img = Image.open(name)
+    #修改圖片成長*寬 = 28*28
+    reIm = img.resize((28,28),Image.ANTIALIAS)
+    #convert('L')圖片改為灰階，再將圖片轉換成陣列
+    im_arr = np.array(reIm.convert("L"))
+    return im_arr
+
+#輸入圖片名
+im1 = pict('7.jpg')
+
+#展示圖片
+plt.imshow(im1,cmap=plt.get_cmap('gray'))
+plt.show
+
+#將圖片改為model可接受的型態
+im1 = im1.reshape(1,28,28).astype('float32')
+im1 = im1/255.0
+print(im1.shape)
+#預測該圖片的數值為何
+
+predict = model.predict_classes(im1)
+print("Predict:")
+print(predict)</code>
+                        </pre>
+                        <span class="image main"><img src="ppt/mnist_pred.jpg" alt="" /></span>
+                        
+                        
+                        
+                        
+                        
+
+                    </ol>
+
+
+                    <hr class="major" />
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <!--
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+-->
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">首頁</a></li>
+                        <li>
+                            <span class="opener">Android Studio</span>
+                            <ul>
+                                <li><a href="android.html">EVEN遊戲</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Unity3D</span>
+                            <ul>
+                                <li><a href="VR.html">VR聊天室</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Python筆記</span>
+                            <ul>
+                                <li><a href="Crawler.html">爬蟲</a></li>
+                                <li><a href="MNIST.html">MNIST實作</a></li>
+                                <li><a href="bst.html">BinarySearchTree</a></li>
+                                <li><a href="threading.html">Threading</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Leetcode筆記</span>
+                            <ul>
+                                <li><a href="leetcode.html">two sum</a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <!--
+								<section>
+									<header class="major">
+										<h2>Ante interdum</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<a href="#" class="image"><img src="images/pic07.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic08.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic09.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+									</div>
+									<ul class="actions">
+										<li><a href="#" class="button">More</a></li>
+									</ul>
+								</section>
+-->
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>聯繫方式</h2>
+                    </header>
+                    <p>若有公司對於我感興趣，或有任何問題，可透過以下方式與我聯繫。</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope">pipi11192@gmail.com</li>
+                        <li class="icon solid fa-phone">0937-360-207</li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.<br />
+                        網頁模板來源:&nbsp;<a href="https://html5up.net/editorial">https://html5up.net/editorial</a></p>
+                </footer>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

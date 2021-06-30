@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <title>Generic - Editorial by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h1>爬蟲程式_Python</h1>
+                        <h3>Selenium與BeautifulSoup4應用</h3>
+                    </header>
+
+                    <p>該篇主要紀錄目前以來爬蟲使用紀錄、心得。</p>
+                    
+                    <h2>BeautifulSoup4範例程式</h2>
+                    <p>本範例用於擷取yahoo電影評論，從主網頁抓取電影網址，再進入網址內抓取評論直至底頁。</p>
+                    <pre>
+                        <code>import requests
+from bs4 import BeautifulSoup
+def getnext(link,soup2): #抓下一頁的網址
+    nextpage = soup2.find('div','page_numbox')
+    if nextpage != None: #若不刪去None程式碼會出錯
+        taga = nextpage.find('li','nexttxt').find('a')
+        if taga != None: #若不刪去None程式碼會出錯
+            getcomment ('https://movies.yahoo.com.tw' + taga['href']) #跑下一頁要抓的評論
+def getcomment(link): #抓評論
+    res2 = requests.get(link)
+    soup2 = BeautifulSoup(res2.text, "html.parser")
+    for comments in soup2.select('.form_good'):
+        comment = comments.find_all('span',{'class':''})[0].text #抓form_good內，沒有class的span
+        if(comment != None):
+            print(comment.replace("\r\n", "")) #去回車符跟空白符
+    getnext(link,soup2) #檢視目前網頁是否有下一頁
+#     print (link) #驗證有抓到網頁，有任何問題可在解除註解檢查
+
+    
+def main(): #抓每年前20部電影的ID
+    res = requests.get("https://movies.yahoo.com.tw/chart.html?cate=rating&search_year=2020")
+    soup = BeautifulSoup(res.text, "html.parser")
+    count = 0 
+    for year in soup.find_all('div','td'):
+        links = year.find('a')
+        if(links != None): #若不刪去None程式碼會出錯
+            count = count + 1 #會抓到一個主網址，一個預告網址，因此設count來抓第一個主網址
+            if (count%2==1):
+                id = links.get('href')[-5:] #抓後五碼為電影ID
+                link = 'https://movies.yahoo.com.tw/movieinfo_review.html/id='+id +'?sort=update_ts&order=desc&page=1'
+                getcomment(link)
+main()
+# main()抓每部電影評論ID，進入評論第一頁 => comment() 抓評論 => 抓完後進入getnext()得到下一頁網址 => 進續comment()直到沒有下一頁
+</code>
+                        </pre>
+                    
+
+                    <h2>Selenium範例程式</h2>
+                    <p>本次範例用於爬取巴哈姆特文章，直至到達指定頁數為止。</p>
+                    <pre>
+                        <code>from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+
+chrome_driver_path ='C:\Python38\chromedriver'
+url ='https://forum.gamer.com.tw/B.php?page=1&bsn=36730'
+
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+driver = webdriver.Chrome(chrome_options=options, executable_path=chrome_driver_path)
+
+driver.implicitly_wait(5)
+driver.get(url)
+
+results = []
+
+#手動定義總頁數
+pages = 121
+for page in range(1, pages+1):
+    print('Now is: Page ', page)
+    print('Working…')
+    #selenium抓取每個文章標題
+    items = driver.find_elements_by_xpath("//p[@class='b-list__main__title']")
+    for item in items:
+        results.append(item.text)
+        #print('Done!')
+        
+    #如果不是最後一頁，就點擊“下一頁”功能鍵  
+    if page == pages:
+        break
+    else:
+        driver.find_element_by_xpath("//div[@id='BH-pagebtn']/a[@class='next']").click()
+        #強制停3秒再開始下一個循環
+        time.sleep(3)
+        
+#印出結果
+print('===Final Results===')
+print(results)
+
+#關閉selenium driver
+driver.quit()</code>
+                        </pre>
+
+                    <hr class="major" />
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <!--
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+-->
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">首頁</a></li>
+                        <li>
+                            <span class="opener">Android Studio</span>
+                            <ul>
+                                <li><a href="android.html">EVEN遊戲</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Unity3D</span>
+                            <ul>
+                                <li><a href="VR.html">VR聊天室</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Python筆記</span>
+                            <ul>
+                                <li><a href="Crawler.html">爬蟲</a></li>
+                                <li><a href="MNIST.html">MNIST實作</a></li>
+                                <li><a href="bst.html">BinarySearchTree</a></li>
+                                <li><a href="threading.html">Threading</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Leetcode筆記</span>
+                            <ul>
+                                <li><a href="leetcode.html">two sum</a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <!--
+								<section>
+									<header class="major">
+										<h2>Ante interdum</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<a href="#" class="image"><img src="images/pic07.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic08.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic09.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+									</div>
+									<ul class="actions">
+										<li><a href="#" class="button">More</a></li>
+									</ul>
+								</section>
+-->
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>聯繫方式</h2>
+                    </header>
+                    <p>若有公司對於我感興趣，或有任何問題，可透過以下方式與我聯繫。</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope">pipi11192@gmail.com</li>
+                        <li class="icon solid fa-phone">0937-360-207</li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.<br />
+                        網頁模板來源:&nbsp;<a href="https://html5up.net/editorial">https://html5up.net/editorial</a></p>
+                </footer>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body></html>

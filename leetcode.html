@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+    <title>Generic - Editorial by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h1>Leetcode解題紀錄</h1>
+                        <h3></h3>
+                    </header>
+
+                    <p>使用Python解題、記錄解題方法、思路及複雜度。</p>
+                    <h2>1.Two Sum</h2>
+                    <p>從一個陣列(nums)中找出兩個加總等於target的數。</p>
+                    <p><b>Example.1</b></p>
+                    <pre>
+                        <code>Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Output: Because nums[0] + nums[1] == 9, we return [0, 1].
+</code>
+                        </pre>
+
+                    <h2>雙for迴圈</h2>
+                    <p>最簡易的作法: 雙for迴圈，時間複雜度O(n^2)。</p>
+                    <pre>
+                        <code>for i in range(len(nums)):
+        for j in range(i,len(nums)):
+             if nums[i]+nums[j]==target:
+                   return [i,j]
+    return []
+</code>
+                        </pre>
+
+
+                    <h2>使用hashmap做紀錄</h2>
+                    <p>Python使用dictionary紀錄target - 陣列中的每個數，例如[1,2,5]；target = 7，dict紀錄: 7-1 ,7-2 => [6:0,5:1]
+                        ，for迴圈到最後一個數5的時候，在dict中找到5，則回傳nums位置[1,2]，時間複雜度O(n)。</p>
+                    <pre>
+                        <code>ht = {}
+for i,num in enumerate(nums):
+    if target-num in ht:
+        return [ht[target-num],i]
+    ht[num] = i
+return []</code>
+                        </pre>
+
+                    <hr class="major" />
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <!--
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+-->
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">首頁</a></li>
+                        <li>
+                            <span class="opener">Android Studio</span>
+                            <ul>
+                                <li><a href="android.html">EVEN遊戲</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Unity3D</span>
+                            <ul>
+                                <li><a href="VR.html">VR聊天室</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Python筆記</span>
+                            <ul>
+                                <li><a href="Crawler.html">爬蟲</a></li>
+                                <li><a href="MNIST.html">MNIST實作</a></li>
+                                <li><a href="bst.html">BinarySearchTree</a></li>
+                                <li><a href="threading.html">Threading</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Leetcode筆記</span>
+                            <ul>
+                                <li><a href="leetcode.html">two sum</a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <!--
+								<section>
+									<header class="major">
+										<h2>Ante interdum</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<a href="#" class="image"><img src="images/pic07.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic08.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic09.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+									</div>
+									<ul class="actions">
+										<li><a href="#" class="button">More</a></li>
+									</ul>
+								</section>
+-->
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>聯繫方式</h2>
+                    </header>
+                    <p>若有公司對於我感興趣，或有任何問題，可透過以下方式與我聯繫。</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope">pipi11192@gmail.com</li>
+                        <li class="icon solid fa-phone">0937-360-207</li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.<br />
+                        網頁模板來源:&nbsp;<a href="https://html5up.net/editorial">https://html5up.net/editorial</a></p>
+                </footer>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

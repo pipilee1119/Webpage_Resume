@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <title>Generic - Editorial by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Content -->
+                <section>
+                    <header class="main">
+                        <h1>Python多線呈操作</h1>
+                    </header>
+
+                    <p>紀錄學習threading使用筆記。</p>
+
+
+                    <h2>範例程式</h2>
+                    <pre>
+                        <code>import threading
+import time
+from queue import Queue
+def job(l,q):
+    for i in range (len(l)):
+        l[i] = l[i]**2
+    q.put(l)
+
+def multithreading():
+    q = Queue()
+    threads = []
+    data = [[1,2,3],[3,4,5],[4,4,4],[5,5,5]]
+    for i in range(4):
+        t = threading.Thread(target=job,args=(data[i],q))
+        t.start()
+        threads.append(t)
+    for thread in threads:
+        thread.join()
+    results = []
+    for _ in range(4):
+        results.append(q.get())
+    print(results)
+multithreading()
+  </code>
+                        </pre>
+                    <h2>主要使用</h2>
+                    <pre>
+                        <code>
+t = threading.Thread(target=job,args=(data[i],q))
+t.start()
+  </code>
+                        </pre>
+                    <p>建立thread: &nbsp; threading.Thread(target = "要執行的function",args = "該func的輸入參數") <br />
+                        開始運行該thread: &nbsp;t.start</p>
+                    
+                    <pre>
+                        <code>
+threads = []
+threads.append(t)
+for thread in threads:
+    thread.join()
+
+  </code>
+                        </pre>
+                    <p>建立thread陣列用於後續join <br />
+                        t加入陣列後，for迴圈確認陣列內的thread都已執行完畢，才進入下段程式(防止執行混亂)。</p>
+
+
+                    <hr class="major" />
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <!--
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+-->
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="index.html">首頁</a></li>
+                        <li>
+                            <span class="opener">Android Studio</span>
+                            <ul>
+                                <li><a href="android.html">EVEN遊戲</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Unity3D</span>
+                            <ul>
+                                <li><a href="VR.html">VR聊天室</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Python筆記</span>
+                            <ul>
+                                <li><a href="Crawler.html">爬蟲</a></li>
+                                <li><a href="MNIST.html">MNIST實作</a></li>
+                                <li><a href="bst.html">BinarySearchTree</a></li>
+                                <li><a href="threading.html">Threading</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">Leetcode筆記</span>
+                            <ul>
+                                <li><a href="leetcode.html">two sum</a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                                <li><a href="#"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <!--
+								<section>
+									<header class="major">
+										<h2>Ante interdum</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<a href="#" class="image"><img src="images/pic07.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic08.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic09.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+									</div>
+									<ul class="actions">
+										<li><a href="#" class="button">More</a></li>
+									</ul>
+								</section>
+-->
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>聯繫方式</h2>
+                    </header>
+                    <p>若有公司對於我感興趣，或有任何問題，可透過以下方式與我聯繫。</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope">pipi11192@gmail.com</li>
+                        <li class="icon solid fa-phone">0937-360-207</li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.<br />
+                        網頁模板來源:&nbsp;<a href="https://html5up.net/editorial">https://html5up.net/editorial</a></p>
+                </footer>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body></html>
