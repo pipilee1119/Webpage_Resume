@@ -5,8 +5,9 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-    <title>BST - Webpage_Resume</title>
+
+<head>
+    <title>MNIST - Webpage_Resume</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
@@ -24,102 +25,48 @@
                 <!-- Content -->
                 <section>
                     <header class="main">
-                        <h1>BinarySearchTree建立</h1>
+                        <h1>論文</h1>
+                        <h3>探討消費者使用線上美食外送平台之動機_雙因子理論與Kano模式比較觀點</h3>
                     </header>
+                    <h2>因素整理</h2>
+                    <p>外送服務屬於電商類型，依照EKB對電商模式分為六個階段:需求識別、資訊搜尋、評估替代品、選擇、交易、售後服務。</p>
+                    <span class="image main"><img src="ppt/research_EKB1.jpg" alt="" /></span>
+                    <span class="image main"><img src="ppt/research_EKB2.jpg" alt="" /></span>
+                    <span class="image main"><img src="ppt/research_EKB3.jpg" alt="" /></span>
+                    
+                    <h2>研究方法</h2>                
 
-                    <p>使用python實作BST。</p>
+                    <p>研究分為兩個階段: <br/>
+研究一: 使用問卷調查法，詢問使用者42項因素屬於”激勵因素”及”保健因素”。<br/>
+研究二: 將42項因素分成具備以及不具備的情況，詢問使用者的接受程度，並將其分類為Kano中的 魅力 / 一維 / 當然 / 無差異 屬性。
+</p>
+                    <p>雙因素問卷收回: 198份有效問卷 => 使用z檢定統計分析得出結果<br/>
+                    Kano問卷收回:213份有效問卷 => 使用眾數得出結果
+                    </p>
+                    
+                    
 
 
-                    <h2>程式</h2>
-                    <pre>
-                        <code>class Node:
-    def __init__ (self,val = None, left = None , right = None):
-        self.val = val
-        self.left = left
-        self.right = right
+                    <span class="image main"><img src="ppt/research_two.jpg" alt="" /></span>
+                    <span class="image main"><img src="ppt/research_kano.jpg" alt="" /></span>
+                    <h2>兩項研究結果</h2>
+                    <span class="image main"><img src="ppt/research_merge.jpg" alt="" /></span>
+                    
+                    <p><b>外送平台重要的必備因素為</b>:<br/>
+                        1.系統容易操作上手,4:節省使用者備餐的麻煩,14.詳細的餐點資訊,16.清楚的餐點分類,<br/>
+                        17.穩定的系統服務,29.送餐地區廣泛,33.提供加點功能,40.健全的退款機制,2.簡潔明瞭的介面<br/>
+                        <b>激勵使用者使用的重要因素為</b>:<br/>
+                        20.序號折扣,21.買一送一,24.週期性推出優惠活動
+                    </p>
+                        
+                        
+                        
+                        
 
-class BST:
-    
-    def __init__(self):
-        self.root = None
-        
-        
-    def _min_node(self,node):
-        if node.left:
-            self.min_node(node.left)
-        else:
-            return node
-        
-    def insert(self,val):
-        if not self.root:
-            self.root = Node(val)
-        else:
-            self._insert(val,self.root)
-            
-    def _insert(self,val,node):
-        if not node:
-            return
-        if val > node.val:
-            if not node.right:
-                node.right = Node(val)
-            else:
-                self._insert(val,node.right)
-        elif val < node.val:
-            if not node.left:
-                node.left = Node(val)
-            else:
-                self._insert(val,node.left)
 
-        
-            
-    def remove(self,val):
-        self.root = self._remove(val,self.root)
-        
-    def _remove(self,val,node):
-        if not node:
-            print('沒有該數字')
-            return None
-        if val > node.val:
-            node.right = self._remove(val,node.right)
-        elif val < node.val:
-            node.left = self._remove(val,node.left)
-        else:
-            if not node.right and not node.left:
-                return None
-            elif not node.right:
-                return node.left
-            elif not node.left:
-                return node.right
-            else:
-                tmp = self._min_node(node.right)
-                node.right = self._remove(tmp.val,node.right)
-                tmp.left = node.left
-                tmp.right = node.right
-                return tmp
-        return node
-        
-        
-    def print_node(self):
-        if self.root:
-            self._print_node(self.root)
-    
-    def _print_node(self,node):
-        if node:
-            self._print_node(node.left)
-            print(node.val)
-            self._print_node(node.right)
 
-if __name__ == '__main__':
-    a = BST()
-    a.insert(5)
-    a.insert(3)
-    a.insert(8)
-    a.insert(1)
-    a.insert(9)
-    a.print_node()
-                        </code>
-                        </pre>
                     <hr class="major" />
+                </section>
             </div>
         </div>
 
@@ -234,4 +181,6 @@ if __name__ == '__main__':
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
 
-</body></html>
+</body>
+
+</html>
